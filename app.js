@@ -58,9 +58,9 @@ var budgetController = (function() {
 })();
 
 
-// UI CONTROLLER
+// =============  UI CONTROLLER  =================================
 var UIController = (function() {
-	var DOMstr = {
+	var DOMStr = {
 		inputType: '.add__type',
 		inputDescription: '.add__description',
 		inputValue: '.add__value',
@@ -72,9 +72,9 @@ var UIController = (function() {
 	return {
 		getInput: function() {
 			return {
-				type: document.querySelector(DOMstr.inputType).value, // Either inc or exp
-				description: document.querySelector(DOMstr.inputDescription).value,
-				value: document.querySelector(DOMstr.inputValue).value
+				type: document.querySelector(DOMStr.inputType).value, // Either inc or exp
+				description: document.querySelector(DOMStr.inputDescription).value,
+				value: document.querySelector(DOMStr.inputValue).value
 			};
 		},
 
@@ -83,12 +83,12 @@ var UIController = (function() {
       // Create HTML string with placeholder text
 
       if (type === 'inc') {
-        element = DOMstr.incomeContainer;
+        element = DOMStr.incomeContainer;
 
         // Construct the HTML for income object
         html = '<div class="item clearfix" id="income-%id%"><div class="item__description">%description%</div><div class="right clearfix"> <div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>'
       } else if (type === 'exp') {
-        element = DOMstr.expensesContainer;
+        element = DOMStr.expensesContainer;
 
         // Construct the HTML for expenses object
         html = '<div class="item clearfix" id="expense-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
@@ -106,8 +106,22 @@ var UIController = (function() {
 
     },
 
-		getDOMstrings: function() {
-			return DOMstr;
+    clearFields: function() {
+      var field, fieldsArr;
+
+      // Define fields to be cleared
+      fields = document.querySelectorAll(DOMStr.inputDescription + ',' + DOMStr.inputValue);
+
+      fieldsArr = Array.prototype.slice.call(fields);
+
+      fieldsArr.forEach((cur, idx, arr) => {
+        cur.value = "";
+      });
+      fieldsArr[0].focus();
+    },
+
+		getDOMStrings: function() {
+			return DOMStr;
 		}
 	};
 })();
@@ -126,7 +140,7 @@ var controller = (function(budgetCtrl, UICtrl) {
 		});
 	};
 
-	var DOM = UICtrl.getDOMstrings();
+	var DOM = UICtrl.getDOMStrings();
 
 	var ctrlAddItem = function() {
     var input, newItem;
@@ -139,6 +153,9 @@ var controller = (function(budgetCtrl, UICtrl) {
 
 		// Add item to UI
     UICtrl.addListItem(newItem, input.type);
+
+    // Clear the fields
+    UICtrl.clearFields();
 
 		// Calculate budget
 		// Display budget on UI
