@@ -2,21 +2,44 @@
 var budgetController = (function() {})();
 
 // UI CONTROLLER
-var UIController = (function() {})();
+var UIController = (function() {
+	var DOMstr = {
+		inputType: '.add__type',
+		inputDescription: '.add__description',
+		inputValue: '.add__value',
+		inputBtn: '.add__btn'
+	};
+
+	return {
+		getInput: function() {
+			return {
+				type: document.querySelector(DOMstr.inputType).value, // Either inc or exp
+				description: document.querySelector(DOMstr.inputDescription).value,
+				value: document.querySelector(DOMstr.inputValue).value
+			};
+		},
+		getDOMstrings: function() {
+			return DOMstr;
+		}
+	};
+})();
 
 // GLOBAL APP CONTROLLER
 var controller = (function(budgetCtrl, UICtrl) {
+	var DOM = UICtrl.getDOMstrings();
+
 	var ctrlAddItem = function() {
 		// Get input data
+		var input = UIController.getInput();
+		console.log(input);
+
 		// Add item to budget controller
 		// Add item to UI
 		// Calculate budget
 		// Display budget on UI
-
-		console.log('WORKS!');
 	};
 
-	document.querySelector('.add__btn').addEventListener('click', ctrlAddItem);
+	document.querySelector(DOM.inputBtn).addEventListener('click', ctrlAddItem);
 
 	document.addEventListener('keydown', function(e) {
 		if (e.keyCode === 13 || e.which === 13) {
