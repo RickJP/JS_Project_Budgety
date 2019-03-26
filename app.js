@@ -44,7 +44,7 @@ var budgetController = (function() {
         newItem = new Income(ID, des, val)
       }
 
-      // Pusgh it into data structure
+      // Push it into data structure
       data.allItems[typ].push(newItem);
 
       // return element
@@ -64,7 +64,9 @@ var UIController = (function() {
 		inputType: '.add__type',
 		inputDescription: '.add__description',
 		inputValue: '.add__value',
-		inputBtn: '.add__btn'
+		inputBtn: '.add__btn',
+    incomeContainer: '.income__list',
+    expensesContainer: '.expenses__list',
 	};
 
 	return {
@@ -75,6 +77,35 @@ var UIController = (function() {
 				value: document.querySelector(DOMstr.inputValue).value
 			};
 		},
+
+    addListItem: function(obj, type ) {
+      var html, newHtml, element;
+      // Create HTML string with placeholder text
+
+      if (type === 'inc') {
+        element = DOMstr.incomeContainer;
+
+        // Construct the HTML for income object
+        html = '<div class="item clearfix" id="income-%id%"><div class="item__description">%description%</div><div class="right clearfix"> <div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>'
+      } else if (type === 'exp') {
+        element = DOMstr.expensesContainer;
+
+        // Construct the HTML for expenses object
+        html = '<div class="item clearfix" id="expense-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+      } else {
+        console.error('ERROR at addListItem! Neither inc or exp selected');
+      }
+    
+      // Replace the placeholder text with some data
+      newHtml = html.replace('%id%', obj.id);
+      newHtml = newHtml.replace('%description%', obj.description);
+      newHtml = newHtml.replace('%value%', obj.value);
+
+      // Insert HTML into the DOM as the last child in the list
+      document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
+
+    },
+
 		getDOMstrings: function() {
 			return DOMstr;
 		}
@@ -107,6 +138,8 @@ var controller = (function(budgetCtrl, UICtrl) {
     newItem = budgetCtrl.addItem(input.type, input.description, input.value);
 
 		// Add item to UI
+    UICtrl.addListItem(newItem, input.type);
+
 		// Calculate budget
 		// Display budget on UI
 	};
