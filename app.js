@@ -168,6 +168,27 @@ var UIController = (function() {
     expensesPercentageLabel: '.item__percentage'
 	};
 
+  var formatNumber = function(num, type) {
+      var numSplit, int, dec, len;
+
+      num = Math.abs(num);
+      num = num.toFixed(2);
+
+      numSplit = num.split('.');
+
+      int = numSplit[0];
+      len = int.length;
+
+      if (int.length > 3) {
+        int = int.substr(0, len - 3) + ',' + int.substr(len - 3, 3);
+      }
+      
+      dec = numSplit[1];
+      return (type === 'exp' ? '-' : '+') + ' ' + int + '.' + dec;
+
+    };
+
+
 	return {
 		getInput: function() {
 			return {
@@ -200,7 +221,7 @@ var UIController = (function() {
       //newHTML = html.replace(/%id%/g, obj.id);
       
       newHtml = newHtml.replace('%description%', obj.description);
-      newHtml = newHtml.replace('%value%', obj.value);
+      newHtml = newHtml.replace('%value%', formatNumber(obj.value, type));
 
       // Insert HTML into the DOM as the last child in the list
       document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
@@ -228,9 +249,13 @@ var UIController = (function() {
     },
 
     displayBudget: function(obj) {
-      document.querySelector(DOMStr.budgetLabel).textContent = obj.budget;
-      document.querySelector(DOMStr.incomeLabel).textContent = obj.totalInc;
-      document.querySelector(DOMStr.expensesLabel).textContent = obj.totalExp;
+
+      var type;
+      obj.budget > 0 ? type = 'inc' : type = 'exp';
+
+      document.querySelector(DOMStr.budgetLabel).textContent = formatNumber(obj.budget, type);
+      document.querySelector(DOMStr.incomeLabel).textContent = formatNumber(obj.totalInc, 'inc');
+      document.querySelector(DOMStr.expensesLabel).textContent = formatNumber(obj.totalExp, 'exp');
       
       if  (obj.percentage > 0) {
         document.querySelector(DOMStr.percentageLabel).textContent = obj.percentage + '%';
@@ -254,7 +279,6 @@ var UIController = (function() {
 
         if (percentages[index] > 0) {
           current.textContent = percentages[index] + '%';
-          console.log(percentages[index]);
         } else {
             current.textContent = '---';
         }
@@ -262,6 +286,8 @@ var UIController = (function() {
 
       });
     },
+
+    
 
 		getDOMStrings: function() {
 			return DOMStr;
@@ -352,7 +378,7 @@ var controller = (function(budgetCtrl, UICtrl) {
       splitID = itemID.split('-');
       type = splitID[0];
       ID = parseInt(splitID[1]);  
-      console.log(ID);
+      //console.log(ID);
 
       // Delete item from data structure
       budgetCtrl.deleteItem(type, ID);
