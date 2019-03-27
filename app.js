@@ -14,6 +14,7 @@ var budgetController = (function() {
   };
 
   var calculateTotal = function(type) {
+    
     var sum = 0;
     data.allItems[type].forEach((cur) => {
       sum += cur.value;
@@ -51,7 +52,7 @@ var budgetController = (function() {
       if (typ === 'exp') {
         newItem = new Expense(ID, des, val);
       } else if (typ === 'inc') {
-        newItem = new Income(ID, des, val)
+        newItem = new Income(ID, des, val);
       }
 
       // Push it into data structure
@@ -72,14 +73,22 @@ var budgetController = (function() {
       data.budget = data.totals.inc - data.totals.exp;
 
       // Calculate the percentage of income that we spent
-      data.percentage = Math.round((data.totals.exp / data.totals.inc) * 100);
+      
+      // Only when total income is greater than zero to stop impossible calculation of divide by zero
+
+      if (data.totals.inc > 0) {
+        data.percentage = Math.round((data.totals.exp / data.totals.inc) * 100);
+      } else {
+        data.percentage = -1;
+      }
+
     },
 
     getBudget: function() {
       return {
         budget: data.budget,
         totalInc: data.totals.inc,
-        totalexp: data.totals.enc,
+        totalexp: data.totals.exp,
         percentage: data.percentage
       }
     },
